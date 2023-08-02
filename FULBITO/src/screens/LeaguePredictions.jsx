@@ -34,6 +34,9 @@ const LeaguePredictions = (selectedLeague) => {
   const [selectedItems, setSelectedItems] = useState(
     Array(fixture.length).fill(null)
   );
+  const [winOrLose, setWinOrLose] = useState([]);
+  const [points, setPoints] = useState(null);
+  
 
   selectedLeague = { ...selectedLeague.route.params };
 
@@ -194,6 +197,10 @@ const LeaguePredictions = (selectedLeague) => {
         setFixture(fixture);
 
         const calculateTimeRemaining = (startTime) => {
+          if (!startTime) {
+            return 0; // O cualquier otro valor predeterminado que desees usar cuando startTime sea null
+          }
+
           const horaInicioPartido = new Date(startTime).getTime();
           const horaActual = new Date().getTime();
           const tiempoRestanteEnMilisegundos = horaInicioPartido - horaActual;
@@ -218,20 +225,74 @@ const LeaguePredictions = (selectedLeague) => {
 
         //Buscar la primera fecha con diferencia mayor que 0
         const firstFutureDate = findFirstFutureDate();
+        console.log(firstFutureDate);
         //console.log(firstFutureDate)
         const millisecondsRemaining =
           calculateTimeRemaining(firstFutureDate) * 60000;
-
+        console.log(millisecondsRemaining);
         setTimeout(() => {
           setReset(!reset);
         }, millisecondsRemaining);
+
+        let results = [];
+        for (const key in userPredictions) {
+          const match = userPredictions[key];
+          //console.log(match);
+          const localTeam = match.local;
+          const visitTeam = match.visit;
+          let matchPrediction = match.prediction;
+          //console.log(matchPrediction);
+
+          // Buscar el partido correspondiente en el array de objetos
+
+          const correspondingMatch = fixtureOrdered.find(
+            (item) =>
+              item.teams.home.name === localTeam &&
+              item.teams.away.name === visitTeam
+          );
+
+          if (correspondingMatch) {
+            const goalsHome = correspondingMatch.goals.home;
+            const goalsAway = correspondingMatch.goals.away;
+
+            // Comparar los goles y determinar el resultado
+            let result;
+            if (goalsHome > goalsAway) {
+              result = "local";
+            } else if (goalsHome < goalsAway) {
+              result = "visit";
+            } else {
+              result = "draw";
+            }
+
+            // Comparar la predicción con el resultado real
+            if (matchPrediction == result) {
+              console.log("WIN");
+              results.push("WIN");
+            } else {
+              console.log("LOSE");
+              results.push("LOSE");
+            }
+          } else {
+            console.log("No prediction");
+            results.push("No prediction");
+          }
+        }
+        setWinOrLose(results);
+        const p = results.reduce((totalPoints, result) => {
+          if (result === "WIN") {
+            return totalPoints + 1; // Suma 1 al total de puntos por cada "WIN"
+          }
+          return totalPoints; // No suma nada si no es "WIN"
+        }, 0);
+        setPoints(p)
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, [selectedValue, selectedLeague.code, user, reset]);
+  }, [selectedValue, selectedLeague.code, user]);
 
   const styles = StyleSheet.create({
     image: {
@@ -337,6 +398,12 @@ const LeaguePredictions = (selectedLeague) => {
       alignItems: "center",
       marginVertical: 5,
     },
+    checkboxGreen: {
+      color: "green",
+    },
+    checkboxRed: {
+      color: "red",
+    },
   });
 
   return (
@@ -411,6 +478,9 @@ const LeaguePredictions = (selectedLeague) => {
                 </View>
               </ListItem.Accordion>
             </View>
+            <View>
+              {points?<Text style={styles.tilte}>Points: {points}</Text>:null}
+            </View>
             <ScrollView>
               {selectedValue === "" ? null : (
                 <View>
@@ -431,7 +501,14 @@ const LeaguePredictions = (selectedLeague) => {
                         onPress={() =>
                           handleCheckboxChange("local", partido, i)
                         }
-                        checkedColor="black"
+                        checkedColor={
+                          selectedItems[i] == "local" && winOrLose[i] == "WIN"
+                            ? "#2de833" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                            : selectedItems[i] === "local" &&
+                              winOrLose[i] === "LOSE"
+                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                        }
                         uncheckedColor="#1d4b26"
                         disabled={partido.status}
                       />
@@ -449,7 +526,14 @@ const LeaguePredictions = (selectedLeague) => {
                         value={selectedCheckbox === "draw"}
                         checked={selectedItems[i] === "draw"}
                         onPress={() => handleCheckboxChange("draw", partido, i)}
-                        checkedColor="black"
+                        checkedColor={
+                          selectedItems[i] == "draw" && winOrLose[i] == "WIN"
+                            ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                            : selectedItems[i] === "draw" &&
+                              winOrLose[i] === "LOSE"
+                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                        }
                         uncheckedColor="#1d4b26"
                         disabled={partido.status}
                       />
@@ -469,7 +553,14 @@ const LeaguePredictions = (selectedLeague) => {
                         onPress={() =>
                           handleCheckboxChange("visit", partido, i)
                         }
-                        checkedColor="black"
+                        checkedColor={
+                          selectedItems[i] == "visit" && winOrLose[i] == "WIN"
+                            ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                            : selectedItems[i] === "visit" &&
+                              winOrLose[i] === "LOSE"
+                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                        }
                         uncheckedColor="#1d4b26"
                         disabled={partido.status}
                       />

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "./../../context/UserContext";
-import { FontContext } from "../../App";
+import { FontContext } from "./../../App";
 import { useNavigation } from "@react-navigation/native";
 import signIn from "../../firebase/auth/signIn";
 import {
@@ -17,20 +17,12 @@ import axios from "axios";
 
 const Main = () => {
   const { user, setUser } = useContext(UserContext);
-  console.log(API_KEY)
   const font = useContext(FontContext);
   const navigation = useNavigation();
   const [completeUser, setCompleteUser] = useState({
     email: "",
     password: "",
   });
-
-  // useEffect(() => {
-  //   setCompleteUser({
-  //     email: "",
-  //     password: "",
-  //   });
-  // }, [navigation]);
 
   const handleChangeText = (name, value) => {
     setCompleteUser({ ...completeUser, [name]: value });
@@ -55,7 +47,6 @@ const Main = () => {
   };
 
   // const prueba1= async () => {
-  
 
   //   try {
   //     const response = await axios.get(
@@ -95,7 +86,6 @@ const Main = () => {
   // });
 
   //  const prueba = async () => {
-  
 
   // const obtenerLigas = async () => {
   //   try {
@@ -119,7 +109,6 @@ const Main = () => {
   // obtenerLigas();
 
   //  const prueba = async () => {
-    
 
   //   try {
   //     const response = await axios.get(
@@ -135,7 +124,7 @@ const Main = () => {
   //           "x-rapidapi-key": API_KEY,
   //         },
   //       }
-        
+
   //     );
   //       console.log(response.data.response)
   //     const fixtureOrdered = response.data.response
@@ -159,7 +148,7 @@ const Main = () => {
   //     console.error(error);
   //   }
   // };
-  
+
   // prueba();
 
   const styles = StyleSheet.create({

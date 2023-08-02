@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FontContext } from "../../App";
+import resetPassword from "../../firebase/auth/resetPassword";
 import {
   View,
   Text,
@@ -14,7 +15,24 @@ import { useNavigation } from '@react-navigation/native';
 const ForgotPassword = () => {
   const font = useContext(FontContext);
   const navigation = useNavigation()
+  const [email, setEmail] = useState("")
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const handleChangeText = (value) => {
+    console.log(value);
+    setEmail(value);
+    
+  };
+
+  const newPassword = () => {
+    if(email ===""){
+      return Alert.alert("Introduce email")
+    }
+    if (!emailRegex.test(email)) {
+      return Alert.alert("Invalid email address");
+    }
+    resetPassword(email)
+  }
   const styles = StyleSheet.create({
     image: {
       width: "100%",
@@ -70,10 +88,15 @@ const ForgotPassword = () => {
         <Text style={[styles.tilte, { marginBottom: 40, fontSize: 30 }]}>
           RESET YOUR PASSWORD
         </Text>
-        <Text style={[styles.tilte]}>User</Text>
-        <TextInput style={styles.textInput}></TextInput>
+        <Text style={[styles.tilte]}>Email</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Email"
+            placeholderTextColor={"#a9ada7"}
+            onChangeText={(value) => handleChangeText(value)}
+          />
         <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <TouchableOpacity style={styles.button} onPress={()=>Alert.alert("Check your email inbox")}>
+          <TouchableOpacity style={styles.button} onPress={()=>newPassword()}>
             <Text  style={styles.buttonText}>Send new password</Text>
           </TouchableOpacity>
         </View>

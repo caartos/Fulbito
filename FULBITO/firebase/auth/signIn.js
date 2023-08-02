@@ -16,6 +16,12 @@ const signIn = (email, password, navigation) => {
         const user = userCredential.user;
         const userEmail = user.email;
 
+        if (!user.emailVerified) {
+          Alert.alert("Missing email verification, check your email inbox");
+          reject("Email not verified.");
+          return;
+        }
+
         firestore
           .collection("users")
           .where("email", "==", userEmail)
@@ -23,7 +29,6 @@ const signIn = (email, password, navigation) => {
           .then((querySnapshot) => {
             if (!querySnapshot.empty) {
               const userData = querySnapshot.docs[0].data();
-         
               resolve(userData);
             } else {
               console.log("User not found");
