@@ -3,6 +3,7 @@ import { UserContext } from "./../../context/UserContext";
 import { FontContext } from "../../App";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Divider } from "@rneui/themed";
+import * as Linking from 'expo-linking';
 import { ListItem } from "@rneui/themed";
 import axios from "axios";
 import {
@@ -12,6 +13,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import fulbitoTable from "./../../firebase/fulbitoTable";
@@ -27,6 +29,29 @@ const Fulbito = (fulbito) => {
   const [selectedLabel, setSelectedLabel] = useState("");
   const [puntajes, setPuntajes] = useState([]);
   const [actFulbito, setActFulbito] = useState({});
+
+
+  const shareFulbitoViaWhatsApp = async() => {
+    try {
+      const phoneNumber = "+34667887637"; // Número de teléfono del destinatario
+      const message = "¡Hola! ¿Te gustaría unirte a nuestro fulbito?"; // Mensaje a enviar
+
+      // Crear el enlace con el número de teléfono y el mensaje
+      const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+
+      // Abrir la aplicación de WhatsApp
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        console.log("No se pudo abrir WhatsApp");
+      }
+    } catch (error) {
+      console.log("Error al enviar el mensaje de WhatsApp:", error);
+    }
+    Alert.alert("Invitation sent")
+  };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -226,7 +251,7 @@ const Fulbito = (fulbito) => {
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <TouchableOpacity
                   style={styles.buttonCreate}
-                  onPress={() => navigation.navigate("Fulbito")}
+                  onPress={() => shareFulbitoViaWhatsApp}
                 >
                   <Text style={styles.buttonText}>Invite Friends</Text>
                   <View

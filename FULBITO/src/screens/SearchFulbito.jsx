@@ -130,6 +130,7 @@ const SearchNewFulbito = () => {
       color: "#1d4b26",
       margin: 2,
       alignSelf: "center",
+      width: "100%"
     },
     button: {
       borderRadius: 5,
@@ -226,7 +227,7 @@ const SearchNewFulbito = () => {
           <View
             style={{
               backgroundColor: "#cef5bb",
-              width: "80%",
+              width: "90%",
               height: "auto",
 
               alignSelf: "center",

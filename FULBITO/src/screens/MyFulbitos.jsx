@@ -17,9 +17,11 @@ import firebase from "firebase/compat/app";
 
 const MyFulbitos = () => {
   const { user, setUser } = useContext(UserContext);
+  console.log(user)
   const font = useContext(FontContext);
   const navigation = useNavigation();
   const [selectedItems, setSelectedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const db = firebase.firestore();
 
   const playingFulbitosPlaying = user.playingFulbitos
@@ -30,6 +32,27 @@ const MyFulbitos = () => {
     ? user.playingFulbitos.filter((fulbito) => fulbito.status === "pending")
     : [];
 
+    const refreshUserData = async () => {
+      try {
+        const userDoc = await db.collection("users").where("id", "==", user.id).get();
+        console.log(userDoc.docs[0].data())
+        if (userDoc.docs[0]) {
+          const userData = userDoc.docs[0].data();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.log("Error refreshing user data:", error);
+      } finally {
+        setLoading(false); // Cambiar el estado a false cuando termina la carga
+      }
+    };
+  
+    useEffect(() => {
+      if (loading) {
+        refreshUserData();
+      }
+    }, [loading]);
+  
   const handleAccept = async (user, pendingUser) => {
     console.log(pendingUser);
     try {
@@ -155,6 +178,7 @@ const MyFulbitos = () => {
     } catch (error) {
       console.log("Error accepting Fulbito:", error);
     }
+    refreshUserData()
   };
 
   const handleReject = async (user, pendingUser) => {
@@ -259,6 +283,7 @@ const MyFulbitos = () => {
     } catch (error) {
       console.log("Error accepting Fulbito:", error);
     }
+    
   };
 
   const handleAcceptRequest = async (user, pendingUser, index) => {
@@ -269,6 +294,7 @@ const MyFulbitos = () => {
         (item, i) => i !== index
       ),
     }));
+    refreshUserData()
   };
 
   const handleRejectRequest = async (user, pendingUser, index) => {
@@ -279,6 +305,7 @@ const MyFulbitos = () => {
         (item, i) => i !== index
       ),
     }));
+    refreshUserData()
   };
   // Eliminar la solicitud aceptada de la lista de fulbitosRequest en el estado
 

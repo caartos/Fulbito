@@ -16,11 +16,11 @@ const signIn = (email, password, navigation) => {
         const user = userCredential.user;
         const userEmail = user.email;
 
-        if (!user.emailVerified) {
-          Alert.alert("Missing email verification, check your email inbox");
-          reject("Email not verified.");
-          return;
-        }
+        // if (!user.emailVerified) {
+        //   Alert.alert("Missing email verification, check your email inbox");
+        //   reject("Email not verified.");
+        //   return;
+        // }
 
         firestore
           .collection("users")
