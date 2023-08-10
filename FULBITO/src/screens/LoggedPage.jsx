@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { UserContext } from "./../../context/UserContext";
 import { FontContext } from "../../App";
 import IoniconsIcon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import logOut from "../../firebase/auth/signout";
-import getUserData from "./../../firebase/getUser&FulbitosPlayingData";
 import {
   View,
   Text,
@@ -16,105 +15,11 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 
 const LoggedPage = () => {
   const { user } = useContext(UserContext);
   const font = useContext(FontContext);
   const navigation = useNavigation();
-  // let points = 0;
-  // const res = () => {
-  //   async function obtenerDatos(objeto) {
-  //     for (const liga in objeto) {
-  //       let code;
-  //       if (liga === "LigaProfesionalArgentina") {
-  //         code = 128;
-  //       } else if (liga === "PremierLeague") {
-  //         code = 39;
-  //       } else if (liga === "LaLiga") {
-  //         code = 140;
-  //       } else if (liga === "SeriaA") {
-  //         code = 135;
-  //       }
-  //       const res = await axios.get(
-  //         `https://v3.football.api-sports.io/fixtures?league=${code}&season=2023`,
-  //         {
-  //           headers: {
-  //             "x-rapidapi-key": "8f1d3a352f8b1964245af55fa0ad7004",
-  //             "x-rapidapi-host": "v3.football.api-sports.io",
-  //           },
-  //         }
-  //       );
-  //       const resFT = res.data.response.filter(
-  //         (objeto) =>
-  //         objeto.fixture.status.short === "FT"
-  //       );
-  //       console.log(objeto)
-  //       console.log(resFT);
-  //       console.log(`Liga: ${liga}`);
-  //       const rondas = objeto[liga];
-  //       console.log(rondas)
-  //       for (const ronda in rondas) {
-  //         console.log(`Ronda: ${ronda}`);
-  //         const partidos = rondas[ronda];
-  //         console.log("PARTIDOS", partidos);
-  //         for (const index in partidos) {
-  //           const partido = partidos[index];
-  //           console.log("PARTIDO", partido);
-  //           if (
-  //             partido &&
-  //             partido.local &&
-  //             partido.visit &&
-  //             partido.prediction
-  //           ) {
-  //             const partidosJugadosFecha = resFT.filter(
-  //               (obj) =>
-  //                 obj.league.round === ronda &&
-  //                 obj.teams.home.name == partido.local &&
-  //                 obj.teams.away.name == partido.visit
-  //             );
-  //             console.log(partidosJugadosFecha);
-
-  //             const golesLocal = partidosJugadosFecha[0]
-  //               ? partidosJugadosFecha[0].goals.home
-  //               : null;
-  //             const golesVisit = partidosJugadosFecha[0]
-  //               ? partidosJugadosFecha[0].goals.away
-  //               : null;
-
-  //             if (partidosJugadosFecha[0]) {
-  //               let finalResult;
-  //               if (golesLocal > golesVisit) {
-  //                 finalResult = "local";
-  //               } else if (golesLocal < golesVisit) {
-  //                 finalResult = "visit";
-  //               } else {
-  //                 finalResult = "draw";
-  //               }
-
-  //               finalResult == partido.prediction
-  //                 ? (points = points + 1)
-  //                 : (points = points);
-  //               console.log("cada chequeo", points);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   const predictions = user.predictions
-  //   const keysToKeep = ["PremierLeague"]
-  //   const filteredPredictions = Object.keys(predictions)
-  // .filter((key) => keysToKeep.includes(key))
-  // .reduce((obj, key) => {
-  //   obj[key] = predictions[key];
-  //   return obj;
-  // }, {});
-  //   obtenerDatos(filteredPredictions);
-  // };
-  // res();
-
-  // console.log("POST FUNCION", points);
 
   const signOut = () => {
     logOut(navigation);

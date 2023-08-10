@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   StyleSheet,
-  ScrollView,
   Alert,
 } from "react-native";
 import searchFulbito from "../../firebase/searchFulbito";

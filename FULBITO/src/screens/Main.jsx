@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "./../../context/UserContext";
 import { FontContext } from "./../../App";
 import { useNavigation } from "@react-navigation/native";
@@ -12,8 +12,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { API_KEY } from "@env";
-import axios from "axios";
+
 
 const Main = () => {
   const { user, setUser } = useContext(UserContext);
@@ -45,111 +44,6 @@ const Main = () => {
       }
     }
   };
-
-  // const prueba1= async () => {
-
-  //   try {
-  //     const response = await axios.get(
-  //       "https://v3.football.api-sports.io/fixtures/rounds",
-  //       {
-  //         params: {
-  //           league: 128,
-  //           season: 2023,
-  //           // status: "NS",
-  //         },
-  //         headers: {
-  //           "x-rapidapi-key": API_KEY,
-  //           "x-rapidapi-host": "v3.football.api-sports.io",
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // prueba1();
-
-  // const rounds = fetch("https://v3.football.api-sports.io/fixtures/rounds?season=2019&league=39", {
-  //   "method": "GET",
-  //   "headers": {
-  //     "x-rapidapi-host": "v3.football.api-sports.io",
-  //     "x-rapidapi-key": API_KEY
-  //   }
-  // })
-  // .then(response => {
-  //   console.log(response.data);
-  // })
-  // .catch(err => {
-  //   console.log(err);
-  // });
-
-  //  const prueba = async () => {
-
-  // const obtenerLigas = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://v3.football.api-sports.io/leagues",
-  //       {
-  //         headers: {
-  //           "x-rapidapi-key": API_KEY,
-  //           "x-rapidapi-host": "v3.football.api-sports.io",
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response.data);
-  //         // Aquí puedes manejar los datos de las ligas, incluyendo los IDs
-  //   } catch (error) {
-  //     console.error(error);
-  //         // Aquí puedes manejar los errores de la solicitud
-  //   }
-  // };
-  // obtenerLigas();
-
-  //  const prueba = async () => {
-
-  //   try {
-  //     const response = await axios.get(
-  //       "https://v3.football.api-sports.io/fixtures?",
-  //       {
-  //         params: {
-  //           league: 128,
-  //           season: 2023,
-  //           round: "1st Phase - 27",
-  //         },
-  //         headers: {
-  //           "x-rapidapi-host": "v3.football.api-sports.io",
-  //           "x-rapidapi-key": API_KEY,
-  //         },
-  //       }
-
-  //     );
-  //       console.log(response.data.response)
-  //     const fixtureOrdered = response.data.response
-  //     .sort((a, b) => a.fixture.timestamp - b.fixture.timestamp
-  //     );
-  //     const fixture = fixtureOrdered.map((partido) => {
-  //       const horaInicio = new Date(
-  //         partido.fixture.timestamp * 1000
-  //       ).toLocaleTimeString("es-AR");
-  //       const equipoLocal = partido.teams.home.name;
-  //       const equipoVisitante = partido.teams.away.name;
-  //       return {
-  //         horaInicio,
-  //         equipoLocal,
-  //         equipoVisitante,
-  //       };
-  //     });
-
-  //      console.log(fixtureOrdered);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // prueba();
 
   const styles = StyleSheet.create({
     image: {

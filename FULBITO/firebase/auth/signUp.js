@@ -4,7 +4,6 @@ import { firebaseConfig } from "../../database/firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { Alert } from "react-native";
-import axios from "axios";
 
 const signUp = (userName, firstName, lastName, email, password, navigation) => {
   const app = initializeApp(firebaseConfig);
