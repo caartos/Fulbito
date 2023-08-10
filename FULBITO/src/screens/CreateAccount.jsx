@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -40,23 +39,24 @@ const CreateAccount = () => {
       completeUser.password === ""
     ) {
       return Alert.alert("All inputs must be completed");
-    } 
+    }
     if (!emailRegex.test(completeUser.email)) {
       return Alert.alert("Invalid email address");
     }
-  
+
     if (completeUser.password.length < passwordMinLength) {
-      return Alert.alert(`Password must have at least ${passwordMinLength} characters`);
-    }
-      signUp(
-        completeUser.userName,
-        completeUser.firstName,
-        completeUser.lastName,
-        completeUser.email,
-        completeUser.password,
-        navigation
+      return Alert.alert(
+        `Password must have at least ${passwordMinLength} characters`
       );
-    
+    }
+    signUp(
+      completeUser.userName,
+      completeUser.firstName,
+      completeUser.lastName,
+      completeUser.email.toLocaleLowerCase(),
+      completeUser.password,
+      navigation
+    );
   };
 
   const styles = StyleSheet.create({

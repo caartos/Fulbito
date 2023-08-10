@@ -1,30 +1,23 @@
 import React, { useContext, useState, useEffect } from "react";
 import { FontContext } from "../../App";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {
   View,
   Text,
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { CheckBox } from "react-native-elements";
-import { ListItem } from "@rneui/themed";
-import axios from "axios";
 
 const Predictions = () => {
   const font = useContext(FontContext);
   const navigation = useNavigation();
- 
 
   const leagues = [
     { league: "Premier League", country: "England", code: "39" },
-    { league: "Seria A", country: "Italy", code: "135" },
+    { league: "Serie A", country: "Italy", code: "135" },
     { league: "LaLiga", country: "Spain", code: "140" },
-    { league: "Liga Profesional Argentina", country: "Argentina", code: "128"},
-    { league: "Seria A", country: "Brasil", code: "71"}
+    { league: "Liga Profesional Argentina", country: "Argentina", code: "128" },
   ];
 
   const styles = StyleSheet.create({
@@ -180,17 +173,16 @@ const Predictions = () => {
                 </View>
               ))}
             </View>
-
           </View>
 
           <TouchableOpacity>
-              <Text
-                onPress={() => navigation.navigate("LoggedPage")}
-                style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
-              >
-                RETURN
-              </Text>
-            </TouchableOpacity>
+            <Text
+              onPress={() => navigation.navigate("LoggedPage")}
+              style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
+            >
+              RETURN
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ImageBackground>

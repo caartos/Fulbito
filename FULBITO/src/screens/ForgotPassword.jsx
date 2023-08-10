@@ -8,31 +8,30 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
-  Alert
+  Alert,
 } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 const ForgotPassword = () => {
   const font = useContext(FontContext);
-  const navigation = useNavigation()
-  const [email, setEmail] = useState("")
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleChangeText = (value) => {
-    console.log(value);
+    //console.log(value);
     setEmail(value);
-    
   };
 
   const newPassword = () => {
-    if(email ===""){
-      return Alert.alert("Introduce email")
+    if (email === "") {
+      return Alert.alert("Introduce email");
     }
     if (!emailRegex.test(email)) {
       return Alert.alert("Invalid email address");
     }
-    resetPassword(email)
-  }
+    resetPassword(email);
+  };
   const styles = StyleSheet.create({
     image: {
       width: "100%",
@@ -89,20 +88,25 @@ const ForgotPassword = () => {
           RESET YOUR PASSWORD
         </Text>
         <Text style={[styles.tilte]}>Email</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Email"
-            placeholderTextColor={"#a9ada7"}
-            onChangeText={(value) => handleChangeText(value)}
-          />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Email"
+          placeholderTextColor={"#a9ada7"}
+          onChangeText={(value) => handleChangeText(value)}
+        />
         <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <TouchableOpacity style={styles.button} onPress={()=>newPassword()}>
-            <Text  style={styles.buttonText}>Send new password</Text>
+          <TouchableOpacity style={styles.button} onPress={() => newPassword()}>
+            <Text style={styles.buttonText}>Send new password</Text>
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity>
-          <Text style={styles.tilte} onPress={() => navigation.navigate('Main')}>LOG IN</Text>
+          <Text
+            style={styles.tilte}
+            onPress={() => navigation.navigate("Main")}
+          >
+            LOG IN
+          </Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

@@ -25,7 +25,7 @@ const getUserData = async (id) => {
     querySnapshot.forEach((doc) => {
       return filteredUser.push(doc.data());
     });
-    console.log(filteredUser[0].fulbitosJugados);
+    //console.log(filteredUser[0].fulbitosJugados);
     if (filteredUser.length ==! "undefined") {
       const fulbitosJugadosIds = filteredUser[0].fulbitosJugados;
 

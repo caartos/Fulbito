@@ -36,25 +36,24 @@ const LeaguePredictions = (selectedLeague) => {
   );
   const [winOrLose, setWinOrLose] = useState([]);
   const [points, setPoints] = useState(null);
-  
 
   selectedLeague = { ...selectedLeague.route.params };
 
   const handleItemPress = (value) => {
     setSelectedValue(value);
     setExpanded(false);
-    console.log(value);
+    //console.log(value);
   };
 
   const handleCheckboxChange = (checkboxName, partido, index) => {
-    console.log(partido);
-    console.log(rounds);
+    //console.log(partido);
+    //console.log(rounds);
     const updatedPredictions = { ...predictions };
     const roundKey = selectedValue;
-    console.log("asdasd", updatedPredictions);
+    //console.log("asdasd", updatedPredictions);
     const spacedLeague = selectedLeague.league;
     const leagueWithoutSpaces = spacedLeague.replace(/\s/g, "");
-    console.log("roundKey", roundKey);
+    //console.log("roundKey", roundKey);
 
     function arrayToObject(arr) {
       const obj = {};
@@ -66,19 +65,19 @@ const LeaguePredictions = (selectedLeague) => {
 
     // Verificar si la liga seleccionada ya tiene predicciones
     if (!updatedPredictions[leagueWithoutSpaces]) {
-      console.log(
-        "uppredhandlechangebox",
-        updatedPredictions[leagueWithoutSpaces]
-      );
+      // console.log(
+      //   "uppredhandlechangebox",
+      //   updatedPredictions[leagueWithoutSpaces]
+      // );
       updatedPredictions[leagueWithoutSpaces] = {};
     }
 
     // Verificar si la ronda seleccionada ya tiene predicciones
     if (!updatedPredictions[leagueWithoutSpaces][roundKey]) {
       let a = Array(fixture.length).fill("");
-      console.log(a);
+      //console.log(a);
       let aObj = arrayToObject(a);
-      console.log(aObj);
+      //console.log(aObj);
 
       updatedPredictions[leagueWithoutSpaces][roundKey] = aObj;
     }
@@ -90,22 +89,23 @@ const LeaguePredictions = (selectedLeague) => {
       round: selectedValue,
     };
 
-    console.log("updpreed", updatedPredictions);
+    //console.log("updpreed", updatedPredictions);
 
     //predicciones que vienen despues de la ultima vez de apretar save
     setPredictions(updatedPredictions);
 
     const updatedItems = [...selectedItems];
-    console.log(updatedItems);
+    //console.log(updatedItems);
     updatedItems[index] = checkboxName;
-    console.log(updatedItems[index]);
+    //console.log(updatedItems[index]);
 
     setSelectedItems(updatedItems);
-    console.log("selecIt", selectedItems);
+    //console.log("selecIt", selectedItems);
   };
 
   const savePredictions = () => {
     saveFixturePredictions(predictions, user);
+    navigation.navigate("Predictions");
   };
 
   useEffect(() => {
@@ -117,18 +117,18 @@ const LeaguePredictions = (selectedLeague) => {
 
         const userPredictions =
           user?.predictions?.[leagueWithoutSpaces]?.[selectedValue] || [];
-        console.log(userPredictions);
+        //console.log(userPredictions);
         let array = [];
         let maxIndex = Math.max(...Object.keys(userPredictions));
 
         for (let i = 0; i <= maxIndex; i++) {
           array.push(userPredictions[i].prediction || "");
         }
-        console.log(array);
+        //console.log(array);
         if (user.predictions) {
           setPredictions(user.predictions);
           setSelectedItems(array);
-          console.log(selectedItems);
+          //console.log(selectedItems);
         }
 
         const rounds = await axios.get(
@@ -144,7 +144,7 @@ const LeaguePredictions = (selectedLeague) => {
             },
           }
         );
-        console.log(rounds.data.response);
+        //console.log(rounds.data.response);
         setRounds(rounds.data.response);
 
         if (selectedValue === "") {
@@ -225,11 +225,11 @@ const LeaguePredictions = (selectedLeague) => {
 
         //Buscar la primera fecha con diferencia mayor que 0
         const firstFutureDate = findFirstFutureDate();
-        console.log(firstFutureDate);
+        //console.log(firstFutureDate);
         //console.log(firstFutureDate)
         const millisecondsRemaining =
           calculateTimeRemaining(firstFutureDate) * 60000;
-        console.log(millisecondsRemaining);
+        //console.log(millisecondsRemaining);
         setTimeout(() => {
           setReset(!reset);
         }, millisecondsRemaining);
@@ -245,11 +245,15 @@ const LeaguePredictions = (selectedLeague) => {
 
           // Buscar el partido correspondiente en el array de objetos
 
-          const correspondingMatch = fixtureOrdered.find(
-            (item) =>
-              item.teams.home.name === localTeam &&
-              item.teams.away.name === visitTeam
-          );
+          const correspondingMatch = fixtureOrdered.find((item) => {
+            //console.log(item)
+            if (item.fixture.status.short == "FT") {
+              return (
+                item.teams.home.name === localTeam &&
+                item.teams.away.name === visitTeam
+              );
+            }
+          });
 
           if (correspondingMatch) {
             const goalsHome = correspondingMatch.goals.home;
@@ -267,17 +271,19 @@ const LeaguePredictions = (selectedLeague) => {
 
             // Comparar la predicción con el resultado real
             if (matchPrediction == result) {
-              console.log("WIN");
+              //console.log("WIN");
               results.push("WIN");
             } else {
-              console.log("LOSE");
+              //console.log("LOSE");
               results.push("LOSE");
             }
           } else {
-            console.log("No prediction");
+            //console.log("No prediction");
             results.push("No prediction");
           }
         }
+        //console.log(results);
+
         setWinOrLose(results);
         const p = results.reduce((totalPoints, result) => {
           if (result === "WIN") {
@@ -285,7 +291,7 @@ const LeaguePredictions = (selectedLeague) => {
           }
           return totalPoints; // No suma nada si no es "WIN"
         }, 0);
-        setPoints(p)
+        setPoints(p);
       } catch (error) {
         console.error(error);
       }
@@ -352,6 +358,12 @@ const LeaguePredictions = (selectedLeague) => {
       fontSize: 18,
       textAlign: "center",
     },
+    homeVsAwayText: {
+      color: "#1d4b26",
+      fontFamily: font.fontFamily["bold"],
+      fontSize: 20,
+      textAlign: "center",
+    },
     buttonCreate: {
       borderRadius: 5,
       borderColor: "#1d4b26",
@@ -384,7 +396,7 @@ const LeaguePredictions = (selectedLeague) => {
       alignSelf: "center",
     },
     disabledCheckBox: {
-      opacity: 0.5, // Puedes ajustar la opacidad según tus preferencias
+      opacity: 0.6, // Podes ajustar la opacidad según tus preferencias
       maxWidth: "95%",
       flexDirection: "row",
       justifyContent: "center",
@@ -479,7 +491,28 @@ const LeaguePredictions = (selectedLeague) => {
               </ListItem.Accordion>
             </View>
             <View>
-              {points?<Text style={styles.tilte}>Points: {points}</Text>:null}
+              {points ? (
+                <Text style={styles.tilte}>Points: {points}</Text>
+              ) : null}
+            </View>
+            <View style={{ flexDirection: "row", marginBottom:5 }}>
+              <Text
+                style={[
+                  styles.homeVsAwayText,
+                  { width: "48%"},
+                ]}
+              >
+                Home
+              </Text>
+              <Text style={styles.homeVsAwayText}>vs</Text>
+              <Text
+                style={[
+                  styles.homeVsAwayText,
+                  { width: "48%"},
+                ]}
+              >
+                Away
+              </Text>
             </View>
             <ScrollView>
               {selectedValue === "" ? null : (
@@ -574,7 +607,7 @@ const LeaguePredictions = (selectedLeague) => {
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <TouchableOpacity
                 style={styles.buttonCreate}
-                onPress={savePredictions}
+                onPress={() => savePredictions()}
               >
                 <Text style={styles.buttonText}>SAVE</Text>
                 <View

@@ -15,7 +15,7 @@ const signUp = (userName, firstName, lastName, email, password, navigation) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       user = userCredential.user;
-      console.log(user);
+      //console.log(user);
 
       const userId = firestore.collection("users").doc().id;
 
@@ -29,10 +29,8 @@ const signUp = (userName, firstName, lastName, email, password, navigation) => {
       });
     })
     .then(() => {
-      console.log("Usuario guardado en Firestore");
-
+      //console.log("Usuario guardado en Firestore");
       firebase.auth().currentUser.sendEmailVerification()
-
         .then(()=>{
           Alert.alert("User saved, verify email sent, check your inbox")
         })

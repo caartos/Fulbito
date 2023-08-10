@@ -46,7 +46,7 @@ const LoggedPage = () => {
   //         }
   //       );
   //       const resFT = res.data.response.filter(
-  //         (objeto) => 
+  //         (objeto) =>
   //         objeto.fixture.status.short === "FT"
   //       );
   //       console.log(objeto)
@@ -246,7 +246,7 @@ const LoggedPage = () => {
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <TouchableOpacity
               style={styles.buttonCreate}
-              onPress={() => Alert.alert("Fulbito created")}
+              onPress={() => Alert.alert("Proximamente las rules")}
             >
               <Text style={styles.buttonText}>FULBITO Rules</Text>
               <View style={{ justifyContent: "center", alignItems: "center" }}>

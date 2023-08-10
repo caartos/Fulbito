@@ -17,10 +17,9 @@ import firebase from "firebase/compat/app";
 
 const MyFulbitos = () => {
   const { user, setUser } = useContext(UserContext);
-  console.log(user)
+  //console.log(user)
   const font = useContext(FontContext);
   const navigation = useNavigation();
-  const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const db = firebase.firestore();
 
@@ -32,29 +31,32 @@ const MyFulbitos = () => {
     ? user.playingFulbitos.filter((fulbito) => fulbito.status === "pending")
     : [];
 
-    const refreshUserData = async () => {
-      try {
-        const userDoc = await db.collection("users").where("id", "==", user.id).get();
-        console.log(userDoc.docs[0].data())
-        if (userDoc.docs[0]) {
-          const userData = userDoc.docs[0].data();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.log("Error refreshing user data:", error);
-      } finally {
-        setLoading(false); // Cambiar el estado a false cuando termina la carga
+  const refreshUserData = async () => {
+    try {
+      const userDoc = await db
+        .collection("users")
+        .where("id", "==", user.id)
+        .get();
+      //console.log(userDoc.docs[0].data())
+      if (userDoc.docs[0]) {
+        const userData = userDoc.docs[0].data();
+        setUser(userData);
       }
-    };
-  
-    useEffect(() => {
-      if (loading) {
-        refreshUserData();
-      }
-    }, [loading]);
-  
+    } catch (error) {
+      console.log("Error refreshing user data:", error);
+    } finally {
+      setLoading(false); // Cambiar el estado a false cuando termina la carga
+    }
+  };
+
+  useEffect(() => {
+    if (loading) {
+      refreshUserData();
+    }
+  }, [loading]);
+
   const handleAccept = async (user, pendingUser) => {
-    console.log(pendingUser);
+    //console.log(pendingUser);
     try {
       const userQuerySnapshot = await db
         .collection("users")
@@ -67,7 +69,7 @@ const MyFulbitos = () => {
           pendingUser.userPendingId
         )
         .get();
-      console.log(userQuerySnapshot.docs[0]);
+      //console.log(userQuerySnapshot.docs[0]);
       if (!userQuerySnapshot.empty) {
         const userDoc = userQuerySnapshot.docs[0];
         const userRef = db.collection("users").doc(userDoc.id);
@@ -80,9 +82,7 @@ const MyFulbitos = () => {
         //   });
 
         await updateDoc(userRef, {
-          playingFulbitos: userDoc
-          .data()
-          .playingFulbitos.map((fulbito) =>
+          playingFulbitos: userDoc.data().playingFulbitos.map((fulbito) =>
             fulbito.id === pendingUser.fulbitoId
               ? {
                   ...fulbito,
@@ -115,14 +115,14 @@ const MyFulbitos = () => {
           { id: pendingUser.fulbitoId }
         )
         .get();
-      console.log(userPendingQuerySnapshot);
-      console.log(userPendingQuerySnapshot.docs[0]);
-      console.log(userPendingQuerySnapshot.docs[0].data());
+      //console.log(userPendingQuerySnapshot);
+      //console.log(userPendingQuerySnapshot.docs[0]);
+      //console.log(userPendingQuerySnapshot.docs[0].data());
       if (!userPendingQuerySnapshot.empty) {
         const userPendingDoc = userPendingQuerySnapshot.docs[0];
 
         const userPendingRef = db.collection("users").doc(userPendingDoc.id);
-        console.log(userPendingDoc);
+        //console.log(userPendingDoc);
         await updateDoc(userPendingRef, {
           playingFulbitos: userPendingDoc
             .data()
@@ -143,7 +143,7 @@ const MyFulbitos = () => {
             ),
         });
       }
-      console.log(user.id);
+      //console.log(user.id);
 
       const fulbitoQuerySnapshot = await db
         .collection("fulbitos")
@@ -171,14 +171,14 @@ const MyFulbitos = () => {
             (request) => request.fulbitoId !== user.fulbitoId
           ),
         }));
-        console.log(user);
+        //console.log(user);
         console.log("Fulbito accepted successfully");
       }
       // Realizar acciones adicionales al aceptar el fulbito
     } catch (error) {
       console.log("Error accepting Fulbito:", error);
     }
-    refreshUserData()
+    refreshUserData();
   };
 
   const handleReject = async (user, pendingUser) => {
@@ -233,8 +233,8 @@ const MyFulbitos = () => {
       if (!userQuerySnapshot.empty) {
         const userDoc = userQuerySnapshot.docs[0];
         const userRef = db.collection("users").doc(userDoc.id);
-        console.log(userDoc.data().fulbitosRequest);
-        console.log(pendingUser.fulbitoId);
+        //console.log(userDoc.data().fulbitosRequest);
+        //console.log(pendingUser.fulbitoId);
         await updateDoc(userRef, {
           fulbitosRequest: userDoc
             .data()
@@ -249,41 +249,9 @@ const MyFulbitos = () => {
           ),
         }));
       }
-
-      // const fulbitoQuerySnapshot = await db
-      //   .collection("fulbitos")
-      //   .where("id", "==", pendingUser.fulbitoId)
-      //   .get();
-
-      // if (!fulbitoQuerySnapshot.empty) {
-      //   const fulbitoDoc = fulbitoQuerySnapshot.docs[0];
-      //   const fulbitoRef = db.collection("fulbitos").doc(fulbitoDoc.id);
-
-      //   const existingParticipants = fulbitoDoc.data().participants || [];
-      //   await updateDoc(fulbitoRef, {
-      //     participants: [
-      //       ...existingParticipants,
-      //       {
-      //         Id: pendingUser.userPendingId,
-      //         userName: pendingUser.userNamePending,
-      //       },
-      //     ],
-      //   });
-
-      // await setUser((prevUser) => ({
-      //     ...prevUser,
-      //     fulbitosRequest: prevUser.fulbitosRequest.filter(
-      //       (request) => request.fulbitoId !== user.fulbitoId
-      //     ),
-      //   }));
-      console.log(user);
-      console.log("Fulbito accepted successfully");
-      // }
-      // Realizar acciones adicionales al aceptar el fulbito
     } catch (error) {
       console.log("Error accepting Fulbito:", error);
     }
-    
   };
 
   const handleAcceptRequest = async (user, pendingUser, index) => {
@@ -294,7 +262,7 @@ const MyFulbitos = () => {
         (item, i) => i !== index
       ),
     }));
-    refreshUserData()
+    refreshUserData();
   };
 
   const handleRejectRequest = async (user, pendingUser, index) => {
@@ -305,7 +273,7 @@ const MyFulbitos = () => {
         (item, i) => i !== index
       ),
     }));
-    refreshUserData()
+    refreshUserData();
   };
   // Eliminar la solicitud aceptada de la lista de fulbitosRequest en el estado
 
@@ -327,7 +295,8 @@ const MyFulbitos = () => {
       textAlign: "center",
       color: "#1d4b26",
       margin: 2,
-    },checkTilte: {
+    },
+    checkTilte: {
       fontFamily: font.fontFamily["bold"],
       fontSize: 22,
       textAlign: "left",
@@ -410,7 +379,7 @@ const MyFulbitos = () => {
             ? playingFulbitosPlaying.map((fulbito, i) => (
                 <TouchableOpacity
                   key={fulbito.id}
-                  onPress={() => navigation.navigate("Fulbito", fulbito) }
+                  onPress={() => navigation.navigate("Fulbito", fulbito)}
                 >
                   <View
                     style={{ flexDirection: "row", justifyContent: "left" }}
@@ -455,17 +424,17 @@ const MyFulbitos = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <View style={{width:"60%", alignSelf:"left"}}>
+                  <View style={{ width: "60%", alignSelf: "left" }}>
                     <Text style={[styles.checkTilte]}>
                       <Text style={styles.checkBoxLeague}>Join</Text>
-                      {" "+ request.userNamePending + " "}
+                      {" " + request.userNamePending + " "}
                       <Text style={styles.checkBoxLeague}>to</Text>
-                      {" " +request.fulbitoName}?
+                      {" " + request.fulbitoName}?
                     </Text>
                   </View>
                   <View
                     style={{
-                      width:"40%",
+                      width: "40%",
                       flexDirection: "row",
                       justifyContent: "space-around",
                     }}
@@ -528,7 +497,7 @@ const MyFulbitos = () => {
           {playingFulbitosPending.length > 0
             ? playingFulbitosPending.map((fulbito, i) => (
                 <View
-                  key={fulbito.i}
+                  key={i}
                   style={{ flexDirection: "row", justifyContent: "left" }}
                 >
                   <View>

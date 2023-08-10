@@ -59,28 +59,28 @@ const SearchNewFulbito = () => {
       if (!userQuerySnapshot.empty) {
         const userDoc = userQuerySnapshot.docs[0];
         const userRef = db.collection("users").doc(userDoc.id);
-        if (  userDoc
-          .data()
-          .playingFulbitos &&
+        if (
+          userDoc.data().playingFulbitos &&
           userDoc
             .data()
             .playingFulbitos.filter((fulbito) => fulbito.id === item.id)
             .length > 0
         ) {
           return Alert.alert("Already playing/request sent");
-        }else{
-        // Reemplaza "user_id" por el ID del usuario actual
-        await updateDoc(userRef, {
-          playingFulbitos: arrayUnion({
-            name: item.name,
-            id: item.id,
-            admin: item.admin,
-            leagues: item.leagues,
-            participants: item.participants,
-            result: item.result,
-            status: "pending",
-          }),
-        });}
+        } else {
+          // Reemplaza "user_id" por el ID del usuario actual
+          await updateDoc(userRef, {
+            playingFulbitos: arrayUnion({
+              name: item.name,
+              id: item.id,
+              admin: item.admin,
+              leagues: item.leagues,
+              participants: item.participants,
+              result: item.result,
+              status: "pending",
+            }),
+          });
+        }
       }
       // Crear o actualizar fulbitosRequest del admin
       const adminQuerySnapshot = await db
@@ -104,7 +104,7 @@ const SearchNewFulbito = () => {
         });
       }
       //console.log("Fulbito joined successfully");
-      Alert.alert("Fulbito request sent")
+      Alert.alert("Fulbito request sent");
       navigation.navigate("LoggedPage");
     } catch (error) {
       console.log("Error joining Fulbito:", error);
@@ -130,7 +130,7 @@ const SearchNewFulbito = () => {
       color: "#1d4b26",
       margin: 2,
       alignSelf: "center",
-      width: "100%"
+      width: "100%",
     },
     button: {
       borderRadius: 5,
@@ -193,7 +193,6 @@ const SearchNewFulbito = () => {
       backgroundColor: "#61ec69",
       borderWidth: "1px",
       borderColor: "#1d4b26",
-      
     },
     scrollContent: {
       justifyContent: "center",
@@ -240,14 +239,14 @@ const SearchNewFulbito = () => {
           >
             {filteredData.map(
               (game) => (
-                console.log(game.id),
-                console.log(selectedItemId),
                 (
                   <TouchableHighlight
                     key={game.id}
                     style={[
                       styles.resultItem,
-                      selectedItemId && game.id === selectedItemId.id && styles.selectedItem,
+                      selectedItemId &&
+                        game.id === selectedItemId.id &&
+                        styles.selectedItem,
                     ]}
                     onPress={() => handleSelectOption(game)}
                     underlayColor="#61ec69"

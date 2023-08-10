@@ -29,7 +29,7 @@ const fulbitoTable = async (fulbito, user) => {
       const actFulbito = fulbitoRef.data();
 
       const promises = actFulbito.participants.map(async (participant) => {
-        console.log(participant);
+        //console.log(participant);
         const userQuerySnapshot = await firestore
           .collection("users")
           .where("id", "==", participant.Id)
@@ -73,17 +73,17 @@ const fulbitoTable = async (fulbito, user) => {
             const resFT = res.data.response.filter(
               (objeto) => objeto.fixture.status.short === "FT"
             );
-            console.log(resFT);
-            console.log(`Liga: ${liga}`);
+            //console.log(resFT);
+            //console.log(`Liga: ${liga}`);
 
             const rondas = objeto[liga];
             for (const ronda in rondas) {
-              console.log(`Ronda: ${ronda}`);
+              //console.log(`Ronda: ${ronda}`);
               const partidos = rondas[ronda];
-              console.log("PARTIDOS", partidos);
+              //console.log("PARTIDOS", partidos);
               for (const index in partidos) {
                 const partido = partidos[index];
-                console.log("PARTIDO", partido);
+                //console.log("PARTIDO", partido);
                 if (
                   partido &&
                   partido.local &&
@@ -96,7 +96,7 @@ const fulbitoTable = async (fulbito, user) => {
                       obj.teams.home.name == partido.local &&
                       obj.teams.away.name == partido.visit
                   );
-                  console.log(partidosJugadosFecha);
+                  //console.log(partidosJugadosFecha);
 
                   const golesLocal = partidosJugadosFecha[0]
                     ? partidosJugadosFecha[0].goals.home
@@ -119,7 +119,7 @@ const fulbitoTable = async (fulbito, user) => {
                     } else {
                       points = points;
                     }
-                    console.log("cada chequeo", points);
+                    //console.log("cada chequeo", points);
                   }
                 }
               }
@@ -138,7 +138,7 @@ const fulbitoTable = async (fulbito, user) => {
 
       const updatedParticipants = await Promise.all(promises);
       actFulbito.participants = updatedParticipants;
-      console.log(actFulbito);
+      //console.log(actFulbito);
       return actFulbito;
     }
   } catch (error) {

@@ -11,8 +11,8 @@ const searchFulbito = async (text, callback) => {
     const searchData = [];
     querySnapshot.forEach((doc) => {
       const item = doc.data();
-      console.log(item)
-      console.log(doc.id)
+      //console.log(item)
+      //console.log(doc.id)
       if (
         item.name.toLowerCase().startsWith(text.toLowerCase()) ||
         (item.admin && item.admin.userName.toLowerCase().startsWith(text.toLowerCase()))
@@ -20,7 +20,7 @@ const searchFulbito = async (text, callback) => {
         searchData.push({ id: doc.id, ...item });
       }
     });
-    console.log(searchData)
+    //console.log(searchData)
     callback(searchData);
   } catch (error) {
     console.error("Error al buscar en la base de datos:", error);

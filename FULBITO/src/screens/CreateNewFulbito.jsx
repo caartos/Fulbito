@@ -11,7 +11,6 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import createFulbito from "./../../firebase/createFulbito";
@@ -26,9 +25,9 @@ const CreateNewFulbito = () => {
 
   const handleCheckboxChange = (value) => {
     const updatedItems = [...selectedItems];
-    console.log(updatedItems)
+    //console.log(updatedItems)
     if (updatedItems.includes(value)) {
-      console.log(value)
+      //console.log(value)
       const index = updatedItems.indexOf(value);
       updatedItems.splice(index, 1);
     } else {
@@ -48,7 +47,6 @@ const CreateNewFulbito = () => {
       user,
       navigation
     );
-   
   };
 
   const styles = StyleSheet.create({
@@ -126,8 +124,13 @@ const CreateNewFulbito = () => {
       style={styles.image} // Ajusta el ancho y alto según tus necesidades
       resizeMode="cover"
     >
-      <KeyboardAwareScrollView style={{ flex: "0.9",  marginTop: 20 }}>
-        <Text style={[styles.mainTilte, { marginTop: 60, marginBottom: 40, fontSize: 30 }]}>
+      <KeyboardAwareScrollView style={{ flex: "0.9", marginTop: 20 }}>
+        <Text
+          style={[
+            styles.mainTilte,
+            { marginTop: 60, marginBottom: 40, fontSize: 30 },
+          ]}
+        >
           NEW FULBITO
         </Text>
         <Text style={[styles.tilte]}>FULBITO name</Text>
@@ -242,29 +245,6 @@ const CreateNewFulbito = () => {
                 style={{ width: "30%" }}
                 checked={selectedItems.includes("LigaProfesionalArgentina")}
                 onPress={() => handleCheckboxChange("LigaProfesionalArgentina")}
-                checkedColor="#1d4b26"
-                uncheckedColor="#1d4b26"
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
-            >
-              <Text
-                style={[
-                  styles.checkBoxLeague,
-                  { width: "70%", textAlign: "left" },
-                ]}
-              >
-                Liga Profesional Brasil
-              </Text>
-              <CheckBox
-                style={{ width: "30%" }}
-                checked={selectedItems.includes("SeriaA")}
-                onPress={() => handleCheckboxChange("SerieA")}
                 checkedColor="#1d4b26"
                 uncheckedColor="#1d4b26"
               />

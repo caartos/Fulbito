@@ -9,7 +9,7 @@ const createFulbito = async (fulbitoName, selectedItems, user, navigation) => {
   if (fulbitoName === "") {
     return Alert.alert("Fulbito name is required");
   }
-  console.log(selectedItems);
+  //console.log(selectedItems);
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const firestore = firebase.firestore();
@@ -67,6 +67,7 @@ const createFulbito = async (fulbitoName, selectedItems, user, navigation) => {
       });
     }
     Alert.alert("Fulbito created");
+    navigation.navigate("MyFulbitos")
   } catch (error) {
     console.log("Error creating Fulbito:", error);
     Alert.alert("Error creating Fulbito");
