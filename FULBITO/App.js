@@ -3,6 +3,8 @@ import { View } from "react-native";
 import AppNavigator from "./AppNavigator";
 import * as Font from "expo-font";
 import { UserProvider } from "./context/UserContext";
+import { Provider } from 'react-redux';
+import store from './store';
 
 export const FontContext = createContext();
 
@@ -28,7 +30,7 @@ export default function App() {
   }
 
   return (
-    <UserProvider>
+    <Provider store={store}>
       <FontContext.Provider
         value={{
           fontFamily: {
@@ -42,6 +44,6 @@ export default function App() {
           <AppNavigator />
         </View>
       </FontContext.Provider>
-    </UserProvider>
+    </Provider>
   );
 }

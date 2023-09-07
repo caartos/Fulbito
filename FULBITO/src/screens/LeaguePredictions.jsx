@@ -18,9 +18,11 @@ import { ListItem } from "@rneui/themed";
 import saveFixturePredictions from "./../../firebase/saveFixturePredictions";
 import axios from "axios";
 import { API_KEY } from "@env";
+import Spinner from "react-native-loading-spinner-overlay";
+import { useSelector } from "react-redux";
 
 const LeaguePredictions = (selectedLeague) => {
-  const { user } = useContext(UserContext);
+  const { user } = useSelector((state) => state.user);
   const font = useContext(FontContext);
   const navigation = useNavigation();
   const [selectedCheckbox, setSelectedCheckbox] = useState(null);
@@ -36,6 +38,8 @@ const LeaguePredictions = (selectedLeague) => {
   );
   const [winOrLose, setWinOrLose] = useState([]);
   const [points, setPoints] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [i, setI] = useState(1);
 
   selectedLeague = { ...selectedLeague.route.params };
 
@@ -112,6 +116,11 @@ const LeaguePredictions = (selectedLeague) => {
     const arr = [];
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setTimeout(() => {
+          setI(1);
+        }, 1);
+
         const spacedLeague = selectedLeague.league;
         const leagueWithoutSpaces = spacedLeague.replace(/\s/g, "");
 
@@ -292,12 +301,19 @@ const LeaguePredictions = (selectedLeague) => {
           return totalPoints; // No suma nada si no es "WIN"
         }, 0);
         setPoints(p);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
-
     fetchData();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    setI(0);
   }, [selectedValue, selectedLeague.code, user]);
 
   const styles = StyleSheet.create({
@@ -424,215 +440,446 @@ const LeaguePredictions = (selectedLeague) => {
       style={styles.image}
       resizeMode="cover"
     >
-      <ScrollView style={{ marginTop: 60 }}>
-        <View>
-          <Text style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}>
-            {selectedLeague.league} - {selectedLeague.country}
-          </Text>
+      {/* <Spinner
+        visible={loading} // Mostrar el Spinner si loading es true
+      /> */}
+      {loading ? (
+        <ScrollView style={{ marginTop: 60 }}>
           <View
             style={{
-              backgroundColor: "#cef5bb",
-              width: "95%",
-              height: "auto",
+              flex: 1,
               justifyContent: "center",
-              alignSelf: "center",
-              borderRadius: 5,
-              paddingTop: 10,
-              paddingBottom: 10,
-              borderColor: "#1d4b26",
-              borderWidth: "1px",
+              alignItems: "center",
+              position: "absolute",
+              left: 35,
+              top: 130,
+              zIndex: 1000,
             }}
           >
-            <View style={{ marginBottom: 10 }}>
-              <Text
-                style={[
-                  styles.checkBoxLeague,
-                  {
-                    width: "100%",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    marginBottom: 10,
-                  },
-                ]}
-              >
-                Rounds
-              </Text>
-
-              <ListItem.Accordion
-                style={[styles.picker, { marginBottom: 10 }]}
-                content={
-                  <ListItem.Content>
-                    <ListItem.Title>{selectedValue || "Rounds"}</ListItem.Title>
-                  </ListItem.Content>
-                }
-                isExpanded={expanded}
-                onPress={() => {
-                  setExpanded(!expanded);
-                }}
-              >
-                <View style={{ maxHeight: 300 }}>
-                  <FlatList
-                    style={{ marginBottom: 100 }}
-                    nestedScrollEnabled={true}
-                    data={rounds}
-                    renderItem={({ item }) => (
-                      <ListItem
-                        key={item}
-                        onPress={() => handleItemPress(item)}
-                      >
-                        <ListItem.Content>
-                          <ListItem.Title>{item}</ListItem.Title>
-                        </ListItem.Content>
-                      </ListItem>
-                    )}
-                    keyExtractor={(item) => item}
-                  />
-                </View>
-              </ListItem.Accordion>
-            </View>
-            <View>
-              {points ? (
-                <Text style={styles.tilte}>Points: {points}</Text>
-              ) : null}
-            </View>
-            <View style={{ flexDirection: "row", marginBottom:5 }}>
-              <Text
-                style={[
-                  styles.homeVsAwayText,
-                  { width: "48%"},
-                ]}
-              >
-                Home
-              </Text>
-              <Text style={styles.homeVsAwayText}>vs</Text>
-              <Text
-                style={[
-                  styles.homeVsAwayText,
-                  { width: "48%"},
-                ]}
-              >
-                Away
-              </Text>
-            </View>
-            <ScrollView>
-              {selectedValue === "" ? null : (
-                <View>
-                  {fixture.map((partido, i) => (
-                    <View
-                      style={
-                        partido.status
-                          ? styles.disabledCheckBox
-                          : styles.enableCheckBox
-                      }
-                      key={i}
-                    >
-                      <CheckBox
-                        containerStyle={{ width: "2%" }}
-                        style={{ alignSelf: "flex-start" }}
-                        value={selectedCheckbox === "local"}
-                        checked={selectedItems[i] === "local"}
-                        onPress={() =>
-                          handleCheckboxChange("local", partido, i)
-                        }
-                        checkedColor={
-                          selectedItems[i] == "local" && winOrLose[i] == "WIN"
-                            ? "#2de833" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
-                            : selectedItems[i] === "local" &&
-                              winOrLose[i] === "LOSE"
-                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
-                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
-                        }
-                        uncheckedColor="#1d4b26"
-                        disabled={partido.status}
-                      />
-                      <Text
-                        style={[
-                          styles.checkBoxLeague,
-                          { maxWidth: "37%", width: "37%" },
-                        ]}
-                      >
-                        {partido.equipoLocal}
-                      </Text>
-                      <CheckBox
-                        containerStyle={{ width: "2%" }}
-                        style={{ alignSelf: "center" }}
-                        value={selectedCheckbox === "draw"}
-                        checked={selectedItems[i] === "draw"}
-                        onPress={() => handleCheckboxChange("draw", partido, i)}
-                        checkedColor={
-                          selectedItems[i] == "draw" && winOrLose[i] == "WIN"
-                            ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
-                            : selectedItems[i] === "draw" &&
-                              winOrLose[i] === "LOSE"
-                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
-                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
-                        }
-                        uncheckedColor="#1d4b26"
-                        disabled={partido.status}
-                      />
-                      <Text
-                        style={[
-                          styles.checkBoxLeague,
-                          { maxWidth: "37%", width: "37%" },
-                        ]}
-                      >
-                        {partido.equipoVisitante}
-                      </Text>
-                      <CheckBox
-                        containerStyle={{ width: "2%" }}
-                        style={{ alignSelf: "flex-end" }}
-                        value={selectedCheckbox === "visit"}
-                        checked={selectedItems[i] === "visit"}
-                        onPress={() =>
-                          handleCheckboxChange("visit", partido, i)
-                        }
-                        checkedColor={
-                          selectedItems[i] == "visit" && winOrLose[i] == "WIN"
-                            ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
-                            : selectedItems[i] === "visit" &&
-                              winOrLose[i] === "LOSE"
-                            ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
-                            : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
-                        }
-                        uncheckedColor="#1d4b26"
-                        disabled={partido.status}
-                      />
-                    </View>
-                  ))}
-                </View>
-              )}
-            </ScrollView>
+            <Spinner
+              visible={loading}
+              textContent={"Loading..."}
+              textStyle={styles.spinnerTextStyle}
+            />
           </View>
           <View>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <TouchableOpacity
-                style={styles.buttonCreate}
-                onPress={() => savePredictions()}
-              >
-                <Text style={styles.buttonText}>SAVE</Text>
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
+            <Text
+              style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}
+            >
+              {selectedLeague.league} - {selectedLeague.country}
+            </Text>
+            <View
+              style={{
+                backgroundColor: "#cef5bb",
+                width: "95%",
+                height: "auto",
+                justifyContent: "center",
+                alignSelf: "center",
+                borderRadius: 5,
+                paddingTop: 10,
+                paddingBottom: 10,
+                borderColor: "#1d4b26",
+                borderWidth: "1px",
+                opacity: 0.6,
+              }}
+            >
+              <View style={{ marginBottom: 10 }}>
+                <Text
+                  style={[
+                    styles.checkBoxLeague,
+                    {
+                      width: "100%",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      marginBottom: 10,
+                    },
+                  ]}
                 >
-                  <MaterialCommunityIcons
-                    name="soccer-field"
-                    size={40}
-                    color={"#baffc9"}
-                  />
-                </View>
+                  Rounds
+                </Text>
+
+                <ListItem.Accordion
+                  style={[styles.picker, { marginBottom: 10 }]}
+                  content={
+                    <ListItem.Content>
+                      <ListItem.Title>
+                        {selectedValue || "Rounds"}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                  }
+                  isExpanded={expanded}
+                  onPress={() => {
+                    setExpanded(!expanded);
+                  }}
+                >
+                  <View style={{ maxHeight: 300 }}>
+                    <FlatList
+                      style={{ marginBottom: 100 }}
+                      nestedScrollEnabled={true}
+                      data={rounds}
+                      renderItem={({ item }) => (
+                        <ListItem
+                          key={item}
+                          onPress={() => handleItemPress(item)}
+                        >
+                          <ListItem.Content>
+                            <ListItem.Title>{item}</ListItem.Title>
+                          </ListItem.Content>
+                        </ListItem>
+                      )}
+                      keyExtractor={(item) => item}
+                    />
+                  </View>
+                </ListItem.Accordion>
+              </View>
+              <View>
+                {points ? (
+                  <Text style={styles.tilte}>Points: {points}</Text>
+                ) : null}
+              </View>
+              <View style={{ flexDirection: "row", marginBottom: 5 }}>
+                <Text style={[styles.homeVsAwayText, { width: "48%" }]}>
+                  Home
+                </Text>
+                <Text style={styles.homeVsAwayText}>vs</Text>
+                <Text style={[styles.homeVsAwayText, { width: "48%" }]}>
+                  Away
+                </Text>
+              </View>
+              <ScrollView>
+                {selectedValue === "" ? null : (
+                  <View>
+                    {fixture.map((partido, i) => (
+                      <View
+                        style={
+                          partido.status
+                            ? styles.disabledCheckBox
+                            : styles.enableCheckBox
+                        }
+                        key={i}
+                      >
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "flex-start" }}
+                          value={selectedCheckbox === "local"}
+                          checked={selectedItems[i] === "local"}
+                          onPress={() =>
+                            handleCheckboxChange("local", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "local" && winOrLose[i] == "WIN"
+                              ? "#2de833" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "local" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                        <Text
+                          style={[
+                            styles.checkBoxLeague,
+                            { maxWidth: "37%", width: "37%" },
+                          ]}
+                        >
+                          {partido.equipoLocal}
+                        </Text>
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "center" }}
+                          value={selectedCheckbox === "draw"}
+                          checked={selectedItems[i] === "draw"}
+                          onPress={() =>
+                            handleCheckboxChange("draw", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "draw" && winOrLose[i] == "WIN"
+                              ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "draw" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                        <Text
+                          style={[
+                            styles.checkBoxLeague,
+                            { maxWidth: "37%", width: "37%" },
+                          ]}
+                        >
+                          {partido.equipoVisitante}
+                        </Text>
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "flex-end" }}
+                          value={selectedCheckbox === "visit"}
+                          checked={selectedItems[i] === "visit"}
+                          onPress={() =>
+                            handleCheckboxChange("visit", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "visit" && winOrLose[i] == "WIN"
+                              ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "visit" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </ScrollView>
+            </View>
+            <View>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <TouchableOpacity
+                  style={styles.buttonCreate}
+                  onPress={() => savePredictions()}
+                >
+                  <Text style={styles.buttonText}>SAVE</Text>
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="soccer-field"
+                      size={40}
+                      color={"#baffc9"}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity>
+                <Text
+                  onPress={() => navigation.navigate("LoggedPage")}
+                  style={[
+                    styles.mainTilte,
+                    { marginTop: 70, marginBottom: 50 },
+                  ]}
+                >
+                  RETURN
+                </Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity>
-              <Text
-                onPress={() => navigation.navigate("LoggedPage")}
-                style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
-              >
-                RETURN
-              </Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      ) : (
+        <ScrollView style={{ marginTop: 60 }}>
+          <View>
+            <Text
+              style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}
+            >
+              {selectedLeague.league} - {selectedLeague.country}
+            </Text>
+            <View
+              style={{
+                backgroundColor: "#cef5bb",
+                width: "95%",
+                height: "auto",
+                justifyContent: "center",
+                alignSelf: "center",
+                borderRadius: 5,
+                paddingTop: 10,
+                paddingBottom: 10,
+                borderColor: "#1d4b26",
+                borderWidth: "1px",
+              }}
+            >
+              <View style={{ marginBottom: 10 }}>
+                <Text
+                  style={[
+                    styles.checkBoxLeague,
+                    {
+                      width: "100%",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      marginBottom: 10,
+                    },
+                  ]}
+                >
+                  Rounds
+                </Text>
+
+                <ListItem.Accordion
+                  style={[styles.picker, { marginBottom: 10 }]}
+                  content={
+                    <ListItem.Content>
+                      <ListItem.Title>
+                        {selectedValue || "Rounds"}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                  }
+                  isExpanded={expanded}
+                  onPress={() => {
+                    setExpanded(!expanded);
+                  }}
+                >
+                  <View style={{ maxHeight: 300 }}>
+                    <FlatList
+                      style={{ marginBottom: 100 }}
+                      nestedScrollEnabled={true}
+                      data={rounds}
+                      renderItem={({ item }) => (
+                        <ListItem
+                          key={item}
+                          onPress={() => handleItemPress(item)}
+                        >
+                          <ListItem.Content>
+                            <ListItem.Title>{item}</ListItem.Title>
+                          </ListItem.Content>
+                        </ListItem>
+                      )}
+                      keyExtractor={(item) => item}
+                    />
+                  </View>
+                </ListItem.Accordion>
+              </View>
+              <View>
+                {points ? (
+                  <Text style={styles.tilte}>Points: {points}</Text>
+                ) : null}
+              </View>
+              <View style={{ flexDirection: "row", marginBottom: 5 }}>
+                <Text style={[styles.homeVsAwayText, { width: "48%" }]}>
+                  Home
+                </Text>
+                <Text style={styles.homeVsAwayText}>vs</Text>
+                <Text style={[styles.homeVsAwayText, { width: "48%" }]}>
+                  Away
+                </Text>
+              </View>
+              <ScrollView>
+                {selectedValue === "" ? null : (
+                  <View>
+                    {fixture.map((partido, i) => (
+                      <View
+                        style={
+                          partido.status
+                            ? styles.disabledCheckBox
+                            : styles.enableCheckBox
+                        }
+                        key={i}
+                      >
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "flex-start" }}
+                          value={selectedCheckbox === "local"}
+                          checked={selectedItems[i] === "local"}
+                          onPress={() =>
+                            handleCheckboxChange("local", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "local" && winOrLose[i] == "WIN"
+                              ? "#2de833" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "local" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                        <Text
+                          style={[
+                            styles.checkBoxLeague,
+                            { maxWidth: "37%", width: "37%" },
+                          ]}
+                        >
+                          {partido.equipoLocal}
+                        </Text>
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "center" }}
+                          value={selectedCheckbox === "draw"}
+                          checked={selectedItems[i] === "draw"}
+                          onPress={() =>
+                            handleCheckboxChange("draw", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "draw" && winOrLose[i] == "WIN"
+                              ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "draw" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                        <Text
+                          style={[
+                            styles.checkBoxLeague,
+                            { maxWidth: "37%", width: "37%" },
+                          ]}
+                        >
+                          {partido.equipoVisitante}
+                        </Text>
+                        <CheckBox
+                          containerStyle={{ width: "2%" }}
+                          style={{ alignSelf: "flex-end" }}
+                          value={selectedCheckbox === "visit"}
+                          checked={selectedItems[i] === "visit"}
+                          onPress={() =>
+                            handleCheckboxChange("visit", partido, i)
+                          }
+                          checkedColor={
+                            selectedItems[i] == "visit" && winOrLose[i] == "WIN"
+                              ? "#1dff4a" // Utilizamos el estilo checkboxGreen si acertó (GANASTE)
+                              : selectedItems[i] === "visit" &&
+                                winOrLose[i] === "LOSE"
+                              ? "#ff0101" // Utilizamos el estilo checkboxRed si falló (PERDISTE)
+                              : "black" // En cualquier otro caso, dejamos el color predeterminado (negro)
+                          }
+                          uncheckedColor="#1d4b26"
+                          disabled={partido.status}
+                        />
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </ScrollView>
+            </View>
+            <View>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <TouchableOpacity
+                  style={styles.buttonCreate}
+                  onPress={() => savePredictions()}
+                >
+                  <Text style={styles.buttonText}>SAVE</Text>
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="soccer-field"
+                      size={40}
+                      color={"#baffc9"}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity>
+                <Text
+                  onPress={() => navigation.navigate("LoggedPage")}
+                  style={[
+                    styles.mainTilte,
+                    { marginTop: 70, marginBottom: 50 },
+                  ]}
+                >
+                  RETURN
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      )}
     </ImageBackground>
   );
 };

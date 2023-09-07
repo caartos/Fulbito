@@ -15,15 +15,18 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import fulbitoTable from "./../../firebase/fulbitoTable";
+import Spinner from "react-native-loading-spinner-overlay";
+import { useSelector } from "react-redux";
 
 const Fulbito = (fulbito) => {
   fulbito = fulbito.route.params;
   //  console.log(fulbito);
   const font = useContext(FontContext);
-  const { user } = useContext(UserContext);
+  const { user } = useSelector((state) => state.user);
   //  console.log(user);
   const navigation = useNavigation();
   const [actFulbito, setActFulbito] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const onShare = async () => {
     try {
@@ -51,11 +54,16 @@ Good luck.`,
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const fulbitoActual = await fulbitoTable(fulbito, user);
         //  console.log(fulbitoActual);
         setActFulbito(fulbitoActual);
         //  console.log(actFulbito);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1500);
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -171,103 +179,122 @@ Good luck.`,
       style={styles.image} // Ajusta el ancho y alto según tus necesidades
       resizeMode="cover"
     >
-      <ScrollView style={{ flex: "0.9" }}>
-        <View style={{ marginTop: 60 }}>
-          <Text style={[styles.mainTilte, { marginBottom: 40, fontSize: 30 }]}>
-            {fulbito.name}
-          </Text>
+      {/* <Spinner
+        visible={loading} // Mostrar el Spinner si loading es true
+      /> */}
+      {loading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Spinner
+            visible={loading}
+            textContent={"Loading..."}
+            textStyle={styles.spinnerTextStyle}
+          />
+        </View>
+      ) : (
+        <ScrollView style={{ flex: "0.9" }}>
+          <View style={{ marginTop: 60 }}>
+            <Text
+              style={[styles.mainTilte, { marginBottom: 40, fontSize: 30 }]}
+            >
+              {fulbito.name}
+            </Text>
 
-          <View
-            style={{
-              backgroundColor: "#cef5bb",
-              width: "80%",
-              height: "auto",
-              justifyContent: "center",
-              alignSelf: "center",
-              borderRadius: 5,
-              paddingTop: 10,
-              paddingBottom: 10,
-              borderColor: "#1d4b26",
-              borderWidth: "1px",
-            }}
-          >
-            <Text style={[styles.tilte]}>Score Table</Text>
+            <View
+              style={{
+                backgroundColor: "#cef5bb",
+                width: "80%",
+                height: "auto",
+                justifyContent: "center",
+                alignSelf: "center",
+                borderRadius: 5,
+                paddingTop: 10,
+                paddingBottom: 10,
+                borderColor: "#1d4b26",
+                borderWidth: "1px",
+              }}
+            >
+              <Text style={[styles.tilte]}>Score Table</Text>
 
-            <View style={{ flexDirection: "row", justifyContent: "left" }}>
-              <Text
-                style={[
-                  styles.checkBoxLeague,
-                  { width: "70%", textAlign: "center", fontWeight: "bold" },
-                ]}
-              >
-                Players
-              </Text>
-              <Text
-                style={[
-                  styles.checkBoxLeague,
-                  { width: "30%", textAlign: "center", fontWeight: "bold" },
-                ]}
-              >
-                Points
-              </Text>
-            </View>
-            {actFulbito.participants &&
-              actFulbito.participants.map((player, i) => (
-                <View key={player.Id}>
-                  <View
-                    style={{ flexDirection: "row", justifyContent: "left" }}
-                  >
-                    <Text
-                      style={[
-                        styles.checkBoxLeague,
-                        { width: "70%", textAlign: "left" },
-                      ]}
-                    >
-                      <Text style={{ fontWeight: "bold" }}>{i + 1}.</Text>{" "}
-                      {player.userName}
-                    </Text>
-                    <Divider
-                      orientation="vertical"
-                      style={styles.dividerPlayerPoints}
-                    />
-                    <Text
-                      style={[
-                        styles.checkBoxLeague,
-                        { width: "30%", textAlign: "center" },
-                      ]}
-                    >
-                      {player.points}
-                    </Text>
-                  </View>
-                  <Divider orientation="horizontal" style={styles.divider} />
-                </View>
-              ))}
-            <View>
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <TouchableOpacity
-                  style={styles.buttonCreate}
-                  onPress={() => onShare()}
+              <View style={{ flexDirection: "row", justifyContent: "left" }}>
+                <Text
+                  style={[
+                    styles.checkBoxLeague,
+                    { width: "70%", textAlign: "center", fontWeight: "bold" },
+                  ]}
                 >
-                  <Text style={styles.buttonText}>Invite Friends</Text>
-                  <View
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                  >
-                    <AntDesign name="adduser" size={40} color={"#baffc9"} />
+                  Players
+                </Text>
+                <Text
+                  style={[
+                    styles.checkBoxLeague,
+                    { width: "30%", textAlign: "center", fontWeight: "bold" },
+                  ]}
+                >
+                  Points
+                </Text>
+              </View>
+              {actFulbito.participants &&
+                actFulbito.participants.map((player, i) => (
+                  <View key={player.Id}>
+                    <View
+                      style={{ flexDirection: "row", justifyContent: "left" }}
+                    >
+                      <Text
+                        style={[
+                          styles.checkBoxLeague,
+                          { width: "70%", textAlign: "left" },
+                        ]}
+                      >
+                        <Text style={{ fontWeight: "bold" }}>{i + 1}.</Text>{" "}
+                        {player.userName}
+                      </Text>
+                      <Divider
+                        orientation="vertical"
+                        style={styles.dividerPlayerPoints}
+                      />
+                      <Text
+                        style={[
+                          styles.checkBoxLeague,
+                          { width: "30%", textAlign: "center" },
+                        ]}
+                      >
+                        {player.points}
+                      </Text>
+                    </View>
+                    <Divider orientation="horizontal" style={styles.divider} />
                   </View>
-                </TouchableOpacity>
+                ))}
+              <View>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <TouchableOpacity
+                    style={styles.buttonCreate}
+                    onPress={() => onShare()}
+                  >
+                    <Text style={styles.buttonText}>Invite Friends</Text>
+                    <View
+                      style={{ justifyContent: "center", alignItems: "center" }}
+                    >
+                      <AntDesign name="adduser" size={40} color={"#baffc9"} />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
+            <TouchableOpacity>
+              <Text
+                style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
+                onPress={() => navigation.navigate("LoggedPage")}
+              >
+                RETURN
+              </Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity>
-            <Text
-              style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
-              onPress={() => navigation.navigate("LoggedPage")}
-            >
-              RETURN
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
     </ImageBackground>
   );
 };

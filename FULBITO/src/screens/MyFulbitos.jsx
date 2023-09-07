@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "./../../context/UserContext";
 import { FontContext } from "../../App";
 import { Divider } from "@rneui/themed";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -14,10 +13,11 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { updateDoc } from "firebase/firestore";
 import firebase from "firebase/compat/app";
+import { useSelector } from "react-redux";
+import { setUser } from "../../actions/userActions";
 
 const MyFulbitos = () => {
-  const { user, setUser } = useContext(UserContext);
-  //console.log(user)
+  const { user } = useSelector((state) => state.user);
   const font = useContext(FontContext);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);

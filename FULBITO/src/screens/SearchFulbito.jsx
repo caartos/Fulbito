@@ -17,9 +17,10 @@ import searchFulbito from "../../firebase/searchFulbito";
 import { useNavigation } from "@react-navigation/native";
 import { updateDoc, arrayUnion } from "firebase/firestore";
 import firebase from "firebase/compat/app";
+import { useSelector } from "react-redux";
 
 const SearchNewFulbito = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useSelector((state) => state.user);
   const font = useContext(FontContext);
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
@@ -236,34 +237,28 @@ const SearchNewFulbito = () => {
               borderWidth: "1px",
             }}
           >
-            {filteredData.map(
-              (game) => (
-                (
-                  <TouchableHighlight
-                    key={game.id}
-                    style={[
-                      styles.resultItem,
-                      selectedItemId &&
-                        game.id === selectedItemId.id &&
-                        styles.selectedItem,
-                    ]}
-                    onPress={() => handleSelectOption(game)}
-                    underlayColor="#61ec69"
-                  >
-                    <View
-                      style={{ flexDirection: "row", justifyContent: "left" }}
-                    >
-                      <Text style={[styles.tilte, { textAlign: "left" }]}>
-                        {game.name + " "}
-                        <Text style={styles.checkBoxLeague}>
-                          by {game.admin.userName}
-                        </Text>
-                      </Text>
-                    </View>
-                  </TouchableHighlight>
-                )
-              )
-            )}
+            {filteredData.map((game) => (
+              <TouchableHighlight
+                key={game.id}
+                style={[
+                  styles.resultItem,
+                  selectedItemId &&
+                    game.id === selectedItemId.id &&
+                    styles.selectedItem,
+                ]}
+                onPress={() => handleSelectOption(game)}
+                underlayColor="#61ec69"
+              >
+                <View style={{ flexDirection: "row", justifyContent: "left" }}>
+                  <Text style={[styles.tilte, { textAlign: "left" }]}>
+                    {game.name + " "}
+                    <Text style={styles.checkBoxLeague}>
+                      by {game.admin.userName}
+                    </Text>
+                  </Text>
+                </View>
+              </TouchableHighlight>
+            ))}
           </View>
         ) : null}
 

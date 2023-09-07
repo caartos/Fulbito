@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontContext } from "../../App";
 import {
   View,
@@ -8,10 +8,16 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const Predictions = () => {
   const font = useContext(FontContext);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false); // Desactiva el indicador de carga
+  }, []); //
 
   const leagues = [
     { league: "Premier League", country: "England", code: "39" },
@@ -117,6 +123,11 @@ const Predictions = () => {
       style={styles.image}
       resizeMode="cover"
     >
+      <Spinner
+            visible={loading}
+            textContent={"Loading..."}
+            textStyle={styles.spinnerTextStyle}
+          />
       <View style={{ marginTop: 60 }}>
         <View>
           <Text style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}>
