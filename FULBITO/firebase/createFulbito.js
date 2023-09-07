@@ -5,11 +5,10 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { Alert } from "react-native";
 
-const createFulbito = async (fulbitoName, selectedItems, user, navigation) => {
+const createFulbito = async (fulbitoName, selectedItems, user) => {
   if (fulbitoName === "") {
     return Alert.alert("Fulbito name is required");
   }
-  //console.log(selectedItems);
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const firestore = firebase.firestore();
@@ -53,8 +52,7 @@ const createFulbito = async (fulbitoName, selectedItems, user, navigation) => {
 
     if (!userQuerySnapshot.empty) {
       const userDoc = userQuerySnapshot.docs[0];
-      const userRef = firestore.collection("users").doc(userDoc.id);
-      
+      const userRef = firestore.collection("users").doc(userDoc.id);      
       await userRef.update({
         playingFulbitos: firebase.firestore.FieldValue.arrayUnion({
           name: fulbitoName,
@@ -66,8 +64,10 @@ const createFulbito = async (fulbitoName, selectedItems, user, navigation) => {
         }),
       });
     }
+    console.log(user)
+    console.log(userQuerySnapshot)
     Alert.alert("Fulbito created");
-    navigation.navigate("MyFulbitos")
+
   } catch (error) {
     console.log("Error creating Fulbito:", error);
     Alert.alert("Error creating Fulbito");

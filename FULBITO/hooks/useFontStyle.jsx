@@ -31,5 +31,14 @@ export function useFontStyle(styles) {
     ...styles.checkBoxLeague,
     fontFamily: font.fontFamily["regular"],
   };
+  styles.checkTitle = {
+    ...styles.checkTilte,
+    fontFamily: font.fontFamily["bold"],
+  };
+  styles.homeVsAwayText = {
+    ...styles.homeVsAwayText,
+    fontFamily: font.fontFamily["bold"],
+  };
+
   return styles;
 }

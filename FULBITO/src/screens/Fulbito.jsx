@@ -1,6 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "./../../context/UserContext";
-import { FontContext } from "../../App";
+import React, { useState, useEffect } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Divider } from "@rneui/themed";
 import {
@@ -8,7 +6,6 @@ import {
   Text,
   ImageBackground,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
   Share,
   Alert,
@@ -17,13 +14,15 @@ import { useNavigation } from "@react-navigation/native";
 import fulbitoTable from "./../../firebase/fulbitoTable";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
+import fulbitoStyles from "../../styles/fulbitoStyles";
+import { useFontStyle } from "../../hooks/useFontStyle";
 
 const Fulbito = (fulbito) => {
   fulbito = fulbito.route.params;
   //  console.log(fulbito);
-  const font = useContext(FontContext);
+  const styles = useFontStyle(fulbitoStyles);
   const { user } = useSelector((state) => state.user);
-  //  console.log(user);
+  console.log(user);
   const navigation = useNavigation();
   const [actFulbito, setActFulbito] = useState({});
   const [loading, setLoading] = useState(false);
@@ -59,9 +58,7 @@ Good luck.`,
         //  console.log(fulbitoActual);
         setActFulbito(fulbitoActual);
         //  console.log(actFulbito);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1500);
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         console.error(error);
@@ -86,93 +83,6 @@ Good luck.`,
   // };
   //console.log(actFulbito);
 
-  const styles = StyleSheet.create({
-    image: {
-      width: "100%",
-      height: "100%",
-    },
-    mainTilte: {
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 22,
-      textAlign: "center",
-      color: "#1d4b26",
-      margin: 20,
-    },
-    tilte: {
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 22,
-      textAlign: "center",
-      color: "#1d4b26",
-      margin: 2,
-      marginBottom: 20,
-    },
-    button: {
-      borderRadius: 5,
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-      backgroundColor: "#a681ef",
-      width: 150,
-      height: 40,
-      marginTop: 60,
-    },
-    buttonText: {
-      color: "#baffc9",
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 20,
-      textAlign: "center",
-      padding: 8,
-    },
-    textInput: {
-      height: 40,
-      margin: 10,
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
-      width: 200,
-      alignSelf: "center",
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-    },
-    container: {
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    checkBoxLeague: {
-      color: "#1d4b26",
-      fontFamily: font.fontFamily["regular"],
-      fontSize: 20,
-      textAlign: "center",
-      padding: 8,
-    },
-    buttonCreate: {
-      borderRadius: 5,
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-      backgroundColor: "#a681ef",
-      width: 220,
-      height: "auto",
-      marginTop: 40,
-      padding: 8,
-    },
-    dividerPlayerPoints: {
-      color: "#1d4b26",
-      height: "100%",
-      borderWidth: "1px",
-    },
-    divider: {
-      color: "#1d4b26",
-      width: "90%",
-      borderWidth: "1px",
-      alignSelf: "center",
-    },
-    picker: {
-      borderColor: "#1d4b26",
-      borderWidth: "1px",
-      height: 50,
-      width: 200,
-      alignSelf: "center",
-    },
-  });
   return (
     <ImageBackground
       source={require("../../public/images/fondoApp.png")} // Reemplaza 'ruta_de_tu_imagen.jpg' con la ruta de tu imagen
@@ -196,7 +106,7 @@ Good luck.`,
         <ScrollView style={{ flex: "0.9" }}>
           <View style={{ marginTop: 60 }}>
             <Text
-              style={[styles.mainTilte, { marginBottom: 40, fontSize: 30 }]}
+              style={[styles.mainTitle, { marginBottom: 40, fontSize: 30 }]}
             >
               {fulbito.name}
             </Text>
@@ -215,7 +125,7 @@ Good luck.`,
                 borderWidth: "1px",
               }}
             >
-              <Text style={[styles.tilte]}>Score Table</Text>
+              <Text style={styles.title}>Score Table</Text>
 
               <View style={{ flexDirection: "row", justifyContent: "left" }}>
                 <Text
@@ -286,7 +196,7 @@ Good luck.`,
             </View>
             <TouchableOpacity>
               <Text
-                style={[styles.mainTilte, { marginTop: 70, marginBottom: 50 }]}
+                style={styles.return}
                 onPress={() => navigation.navigate("LoggedPage")}
               >
                 RETURN

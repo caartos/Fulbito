@@ -29,13 +29,13 @@ const CreateAccount = () => {
       <LoadingSpinner loading={loading} />
       <View style={{ flex: "0.9", marginTop: 60 }}>
         <FormUser
-          title="Create Account"
+          title={"Create Account"}
           setData={setCompleteUser}
           fieldConfig={userFields}
           styles={styles}
         />
         <ButtonSubmitUser
-          title="Create User"
+          title={"Create User"}
           onSubmit={createNewUser}
           styles={styles}
         />

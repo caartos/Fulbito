@@ -14,6 +14,7 @@ import ButtonLogOut from "../../components/buttons/ButtonLogOut";
 
 const LoggedPage = () => {
   const { user } = useSelector((state) => state.user);
+  console.log(user)
   const styles = useFontStyle(loggedPageStyles);
 
   return (

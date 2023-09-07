@@ -1,14 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "./../../context/UserContext";
-import { FontContext } from "../../App";
+import React, { useState, useEffect } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   View,
   Text,
   ImageBackground,
   TouchableOpacity,
-  StyleSheet,
   FlatList,
   ScrollView,
 } from "react-native";
@@ -20,10 +16,12 @@ import axios from "axios";
 import { API_KEY } from "@env";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
+import leaguePredionsStyles from "../../styles/leaguePredictionsStyles";
+import { useFontStyle } from "../../hooks/useFontStyle";
 
 const LeaguePredictions = (selectedLeague) => {
   const { user } = useSelector((state) => state.user);
-  const font = useContext(FontContext);
+  const styles = useFontStyle(leaguePredionsStyles);
   const navigation = useNavigation();
   const [selectedCheckbox, setSelectedCheckbox] = useState(null);
   const [fixture, setFixture] = useState([]);
@@ -316,124 +314,6 @@ const LeaguePredictions = (selectedLeague) => {
     setI(0);
   }, [selectedValue, selectedLeague.code, user]);
 
-  const styles = StyleSheet.create({
-    image: {
-      width: "100%",
-      height: "100%",
-    },
-    mainTilte: {
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 22,
-      textAlign: "center",
-      color: "#1d4b26",
-      margin: 20,
-    },
-    tilte: {
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 22,
-      textAlign: "center",
-      color: "#1d4b26",
-      margin: 2,
-      alignSelf: "center",
-    },
-    button: {
-      borderRadius: 5,
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-      backgroundColor: "#a681ef",
-      width: 150,
-      height: 40,
-      marginTop: 60,
-    },
-    buttonText: {
-      color: "#baffc9",
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 20,
-      textAlign: "center",
-      padding: 8,
-    },
-    textInput: {
-      height: 40,
-      margin: 10,
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
-      width: 200,
-      alignSelf: "center",
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-    },
-    container: {
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    checkBoxLeague: {
-      paddingLeft: 9,
-      color: "#1d4b26",
-      fontFamily: font.fontFamily["regular"],
-      fontSize: 18,
-      textAlign: "center",
-    },
-    homeVsAwayText: {
-      color: "#1d4b26",
-      fontFamily: font.fontFamily["bold"],
-      fontSize: 20,
-      textAlign: "center",
-    },
-    buttonCreate: {
-      borderRadius: 5,
-      borderColor: "#1d4b26",
-      borderWidth: 2,
-      backgroundColor: "#a681ef",
-      width: 220,
-      height: "auto",
-      marginTop: 40,
-      padding: 8,
-    },
-    resultItem: {
-      padding: 10,
-      marginVertical: 5,
-      borderRadius: 5,
-      alignSelf: "left",
-      width: "auto",
-    },
-    selectedItem: {
-      alignSelf: "center",
-      width: "auto",
-      backgroundColor: "#f5e464",
-    },
-    scrollContent: {
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    picker: {
-      height: 50,
-      width: 220,
-      alignSelf: "center",
-    },
-    disabledCheckBox: {
-      opacity: 0.6, // Podes ajustar la opacidad según tus preferencias
-      maxWidth: "95%",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      marginVertical: 5,
-    },
-    enableCheckBox: {
-      maxWidth: "95%",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      marginVertical: 5,
-    },
-    checkboxGreen: {
-      color: "green",
-    },
-    checkboxRed: {
-      color: "red",
-    },
-  });
-
   return (
     <ImageBackground
       source={require("../../public/images/fondoApp.png")}
@@ -464,7 +344,7 @@ const LeaguePredictions = (selectedLeague) => {
           </View>
           <View>
             <Text
-              style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}
+              style={[styles.mainTitle, { marginBottom: 30, fontSize: 30 }]}
             >
               {selectedLeague.league} - {selectedLeague.country}
             </Text>
@@ -534,7 +414,7 @@ const LeaguePredictions = (selectedLeague) => {
               </View>
               <View>
                 {points ? (
-                  <Text style={styles.tilte}>Points: {points}</Text>
+                  <Text style={styles.title}>Points: {points}</Text>
                 ) : null}
               </View>
               <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -660,7 +540,7 @@ const LeaguePredictions = (selectedLeague) => {
                 <Text
                   onPress={() => navigation.navigate("LoggedPage")}
                   style={[
-                    styles.mainTilte,
+                    styles.mainTitle,
                     { marginTop: 70, marginBottom: 50 },
                   ]}
                 >
@@ -674,7 +554,7 @@ const LeaguePredictions = (selectedLeague) => {
         <ScrollView style={{ marginTop: 60 }}>
           <View>
             <Text
-              style={[styles.mainTilte, { marginBottom: 30, fontSize: 30 }]}
+              style={[styles.mainTitle, { marginBottom: 30, fontSize: 30 }]}
             >
               {selectedLeague.league} - {selectedLeague.country}
             </Text>
@@ -743,7 +623,7 @@ const LeaguePredictions = (selectedLeague) => {
               </View>
               <View>
                 {points ? (
-                  <Text style={styles.tilte}>Points: {points}</Text>
+                  <Text style={styles.title}>Points: {points}</Text>
                 ) : null}
               </View>
               <View style={{ flexDirection: "row", marginBottom: 5 }}>
@@ -868,10 +748,7 @@ const LeaguePredictions = (selectedLeague) => {
               <TouchableOpacity>
                 <Text
                   onPress={() => navigation.navigate("LoggedPage")}
-                  style={[
-                    styles.mainTilte,
-                    { marginTop: 70, marginBottom: 50 },
-                  ]}
+                  style={styles.return}
                 >
                   RETURN
                 </Text>

@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
       margin: 20,
       fontSize: 30,
       marginTop: 70,
+      
     },
     title: {
       fontSize: 22,
