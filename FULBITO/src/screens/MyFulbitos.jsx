@@ -22,14 +22,13 @@ const MyFulbitos = () => {
 
   const fulbitosRequest = user.fulbitosRequest ? user.fulbitosRequest : null;
 
-
   return (
     <ImageBackground
       source={require("../../public/images/fondoApp.png")}
       style={styles.image}
       resizeMode="cover"
     >
-      <View style={{ flex: "0.9", marginTop: 60 }}>
+      <ScrollView style={{ flex: "0.9", marginTop: 60 }}>
         <Text style={[styles.mainTitle, { marginBottom: 40, fontSize: 30 }]}>
           My FULBITOS
         </Text>
@@ -58,7 +57,7 @@ const MyFulbitos = () => {
           />
         </View>
         <ButtonReturn direction={"LoggedPage"} styles={styles} />
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };

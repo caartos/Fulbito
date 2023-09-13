@@ -10,6 +10,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1d4b26",
     margin: 20,
+    marginBottom: 40,
+    fontSize: 30,
   },
   title: {
     fontSize: 22,
@@ -58,6 +60,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1d4b26",
     margin: 20,
+  },
+  tableContainer: {
+    backgroundColor: "#cef5bb",
+    width: "80%",
+    height: "auto",
+    justifyContent: "center",
+    alignSelf: "center",
+    borderRadius: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderColor: "#1d4b26",
+    borderWidth: "1px",
   },
 });
 

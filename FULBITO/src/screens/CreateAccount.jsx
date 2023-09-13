@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ImageBackground, View } from "react-native";
+import { ImageBackground, ScrollView } from "react-native";
 import { useCreateNewUser } from "../../hooks/useCreateNewUser";
 import { useFontStyle } from "../../hooks/useFontStyle";
 import LoadingSpinner from "../../components/spinner/Spinner";
@@ -27,7 +27,7 @@ const CreateAccount = () => {
       resizeMode="cover"
     >
       <LoadingSpinner loading={loading} />
-      <View style={{ flex: "0.9", marginTop: 60 }}>
+      <ScrollView style={{ flex: "0.9", marginTop: 60 }}>
         <FormUser
           title={"Create Account"}
           setData={setCompleteUser}
@@ -40,7 +40,7 @@ const CreateAccount = () => {
           styles={styles}
         />
         <ButtonReturn direction={"Main"} styles={styles} />
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };

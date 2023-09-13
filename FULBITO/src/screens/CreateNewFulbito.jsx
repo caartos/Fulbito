@@ -6,9 +6,10 @@ import createNewFulbitoStyles from "./../../styles/createNewFulbitoStyles";
 import { useFontStyle } from "../../hooks/useFontStyle";
 import { useCreateNewFulbito } from "../../hooks/useCreateNewFulbito";
 import CheckboxLeagues from "../../components/checkbox/CheckboxLeagues";
-import ButtonCreateNewFulbito from "../../components/buttons/ButtonCreateNewFulbito";
+import ButtonPlayFulbito from "../../components/buttons/ButtonPlayFulbito";
 import InputFulbitoName from "../../components/inputs/InputFulbitoName";
 import LoadingSpinner from "../../components/spinner/Spinner";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CreateNewFulbito = () => {
   const styles = useFontStyle(createNewFulbitoStyles);
@@ -34,9 +35,17 @@ const CreateNewFulbito = () => {
           setSelectedItems={setSelectedItems}
           styles={styles}
         />
-        <ButtonCreateNewFulbito
-          createNewFulbito={createNewFulbito}
+        <ButtonPlayFulbito
+          submitFunction={createNewFulbito}
+          title={"create FULBITO"}
           styles={styles}
+          customIcon={
+            <MaterialCommunityIcons
+              name="soccer-field"
+              size={40}
+              color={"#baffc9"}
+            />
+          }
         />
         <ButtonReturn direction={"LoggedPage"} styles={styles} />
       </KeyboardAwareScrollView>
